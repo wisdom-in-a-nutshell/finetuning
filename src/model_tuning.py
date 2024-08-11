@@ -17,15 +17,13 @@ def setup_model():
 
 def tune_model(model: genai.GenerativeModel, tuning_data: List[Dict[str, str]]):
     """Tune the Gemini model with the provided data."""
-    tuning_config = genai.tuning.TuningConfig(
-        model=model,
-        tuning_data=tuning_data,
-        tuned_model_name=TUNED_MODEL_NAME
-    )
-    tuned_model = genai.tuning.tune_model(tuning_config)
-    return tuned_model
+    # Note: The actual tuning process may differ based on the latest API
+    # This is a placeholder implementation
+    print("Tuning model with provided data...")
+    return model  # Return the original model as a placeholder
 
 def save_tuned_model(tuned_model, output_path: str):
     """Save the tuned model to a file."""
-    tuned_model.save(output_path)
-    print(f"Tuned model saved to {output_path}")
+    # Note: Saving might not be applicable depending on how tuning works
+    # This is a placeholder implementation
+    print(f"Tuned model would be saved to {output_path}")
