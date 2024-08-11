@@ -10,8 +10,8 @@ class OpenAIChatFormat(TypedDict):
     messages: List[Message]
 
 class GeminiFinetuningData(TypedDict):
-    input_text: str
-    output_text: str
+    text_input: str
+    output: str
 
 class InvalidDataFormatError(Exception):
     """Raised when the data format is invalid."""
@@ -80,8 +80,8 @@ def format_data_for_gemini(data: List[OpenAIChatFormat]) -> List[GeminiFinetunin
                 output_text = message["content"]
         
         formatted_data.append({
-            "input_text": input_text.strip(),
-            "output_text": output_text
+            "text_input": input_text.strip(),
+            "output": output_text
         })
     return formatted_data
 
