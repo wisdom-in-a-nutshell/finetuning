@@ -93,3 +93,14 @@ class TestModelTuner:
         tuner = ModelTuner()
         with pytest.raises(ValueError, match="No tuning job has been started"):
             tuner.wait_for_tuning_completion()
+
+    @patch('google.generativeai.list_models')
+    def test_setup_model_selects_tunable_model(self, mock_list_models):
+        tunable_model = Mock(name="TunableModel")
+        tunable_model.supported_generation_methods = ["createTunedModel"]
+        non_tunable_model = Mock(name="NonTunableModel")
+        non_tunable_model.supported_generation_methods = []
+        mock_list_models.return_value = [non_tunable_model, tunable_model]
+
+        tuner = ModelTuner()
+        assert tuner.model == tunable_model

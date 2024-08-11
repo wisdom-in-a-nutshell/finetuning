@@ -28,3 +28,6 @@ Thumbs.db
 *.csv
 *.json
 tuned_model/
+
+# Explicitly ignore client_secret.json
+client_secret.json
