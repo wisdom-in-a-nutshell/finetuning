@@ -24,8 +24,11 @@ class ModelTuner:
                   'https://www.googleapis.com/auth/generative-language.retriever']
 
         # Use environment variable for client_secret.json path
-        client_secret_path = os.getenv('CLIENT_SECRET_PATH', 'client_secret.json')
-        self.logger.info(f"Looking for client_secret.json at: {client_secret_path}")
+        client_secret_path = os.environ.get('CLIENT_SECRET_PATH')
+        if not client_secret_path:
+            raise ValueError("CLIENT_SECRET_PATH environment variable is not set")
+        
+        self.logger.info(f"Using client_secret.json from: {client_secret_path}")
 
         if os.path.exists('token.json'):
             self.creds = Credentials.from_authorized_user_file('token.json', SCOPES)
