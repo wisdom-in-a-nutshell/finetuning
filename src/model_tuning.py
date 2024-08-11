@@ -3,10 +3,7 @@ from typing import List
 import os
 import sys
 import time
-
-# Add the project root to the Python path
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.insert(0, project_root)
+import logging
 
 from config.settings import API_KEY, MODEL_NAME
 from src.data_preparation import GeminiFinetuningData
@@ -14,12 +11,14 @@ from src.data_preparation import GeminiFinetuningData
 def setup_model():
     """Set up the Gemini model for tuning."""
     genai.configure(api_key=API_KEY)
-    models = [m for m in genai.list_models() if "createTunedModel" in m.supported_generation_methods]
+    all_models = genai.list_models()
+    logging.info(f"Available models in Gemini: {[m.name for m in all_models]}")
+    models = [m for m in all_models if "createTunedModel" in m.supported_generation_methods]
     if not models:
         raise ValueError("No suitable models found for tuning")
     return models[0]
 
-def tune_model(model, tuning_data: List[GeminiFinetuningData]):
+def tune_model(model: genai.Model, tuning_data: List[GeminiFinetuningData]):
     """Tune the Gemini model with the provided data."""
     print("Starting model tuning process...")
     
