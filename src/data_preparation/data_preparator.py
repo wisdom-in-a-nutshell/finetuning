@@ -76,6 +76,8 @@ class DataPreparator:
     def prepare_data(self) -> List[GeminiFinetuningData]:
         """Load, validate, and format data for Gemini finetuning."""
         try:
+
+
             raw_data = self.load_and_validate_data()
             return self.format_data_for_gemini(raw_data)
         except (InvalidDataFormatError, InvalidJSONError, FileNotFoundError) as e:

@@ -9,6 +9,9 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+from ..data_preparation.models import GeminiFinetuningData
+
+
 class ModelTuner:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -46,7 +49,7 @@ class ModelTuner:
         self.logger.info("OAuth 2.0 credentials set up successfully.")
         genai.configure(credentials=self.creds)
 
-    def tune_model(self, tuning_data: List[Dict[str, str]], name: str = None):
+    def tune_model(self, tuning_data: List[GeminiFinetuningData], name: str = None):
         """Tune the Gemini model with the provided data."""
         self.logger.info("Starting model tuning process...")
         
@@ -60,7 +63,7 @@ class ModelTuner:
                 source_model="models/gemini-1.5-flash-001-tuning",
                 training_data=tuning_data,
                 epoch_count=1,
-                batch_size=4,
+                batch_size=2,
                 learning_rate=0.001,
             )
             self.logger.info(f"Tuning job started. Operation name: {operation.name}")
@@ -73,7 +76,7 @@ class ModelTuner:
         """Wait for the tuning process to complete."""
         for status in operation.wait_bar():
             self.logger.info(f"Tuning status: {status}")
-            time.sleep(10)
+            time.sleep(60)
 
         result = operation.result()
         self.logger.info("Tuning completed successfully.")
