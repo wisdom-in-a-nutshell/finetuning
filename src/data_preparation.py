@@ -1,32 +1,18 @@
-import pandas as pd
+import csv
 from typing import List, Dict
-import logging
 
-logger = logging.getLogger(__name__)
-
-def load_data(file_path: str) -> pd.DataFrame:
+def load_data(file_path: str) -> List[Dict[str, str]]:
     """Load training data from a CSV file."""
-    try:
-        return pd.read_csv(file_path)
-    except FileNotFoundError:
-        logger.error(f"File not found: {file_path}")
-        raise
-    except pd.errors.EmptyDataError:
-        logger.error(f"Empty CSV file: {file_path}")
-        raise
+    with open(file_path, 'r') as f:
+        reader = csv.DictReader(f)
+        return list(reader)
 
-def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
-    """Preprocess the data for tuning."""
-    # Implement any necessary preprocessing steps
-    return df
-
-def format_data_for_tuning(df: pd.DataFrame) -> List[Dict[str, str]]:
+def format_data_for_tuning(data: List[Dict[str, str]]) -> List[Dict[str, str]]:
     """Format the data into the required structure for tuning."""
-    tuning_data = []
-    for _, row in df.iterrows():
-        example = {
+    return [
+        {
             "input_text": row["input"],
             "output_text": row["output"]
         }
-        tuning_data.append(example)
-    return tuning_data
+        for row in data
+    ]
