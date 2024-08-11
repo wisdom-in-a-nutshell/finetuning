@@ -8,11 +8,12 @@ from src.model_tuning.model_tuner import ModelTuner
 @pytest.fixture(scope="module")
 def model_tuner():
     load_dotenv()  # This will load the variables from .env file
-    api_key = os.getenv('GEMINI_API_KEY')
-    if not api_key:
-        pytest.skip("GEMINI_API_KEY not set in environment or .env file")
-    genai.configure(api_key=api_key)
-    return ModelTuner()
+    client_secret_path = os.getenv('CLIENT_SECRET_PATH')
+    if not client_secret_path:
+        pytest.skip("CLIENT_SECRET_PATH not set in environment or .env file")
+    tuner = ModelTuner()
+    assert tuner.creds is not None, "Credentials not set up properly in ModelTuner"
+    return tuner
 
 @pytest.mark.integration
 def test_setup_model_integration(model_tuner):
@@ -42,7 +43,7 @@ def test_tune_model_integration(model_tuner):
 
     # Wait for the tuning to complete (this may take a while)
     try:
-        tuned_model = model_tuner.wait_for_tuning_completion()
+        tuned_model = model_tuner.wait_for_tuning_completion(tuning_job)
         assert tuned_model is not None
         assert tuned_model.state == "ACTIVE"
 
@@ -56,3 +57,26 @@ def test_tune_model_integration(model_tuner):
     finally:
         # Clean up: delete the tuned model
         genai.delete_tuned_model(f'tunedModels/{name}')
+
+@pytest.mark.integration
+def test_get_available_models_integration(model_tuner):
+    # Ensure credentials are set up
+    assert model_tuner.creds is not None, "Credentials not set up properly"
+
+    # Get the list of available models
+    available_models = model_tuner.get_available_models()
+    
+    # Check if we got a non-empty list of models
+    assert isinstance(available_models, list)
+    assert len(available_models) > 0
+    
+    # Print the names of available models
+    print("Available models:")
+    for model in available_models:
+        print(f"- {model.name}")
+        print(f"  Supported generation methods: {model.supported_generation_methods}")
+
+    # Log the names of available models (optional, for informational purposes)
+    model_tuner.logger.info("Available models for fine-tuning:")
+    for model in available_models:
+        model_tuner.logger.info(f"- {model.name}")
