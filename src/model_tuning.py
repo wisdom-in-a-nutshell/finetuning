@@ -19,7 +19,7 @@ def setup_model():
         raise ValueError("No suitable models found for tuning")
     return models[0]
 
-def tune_model(model: genai.Model, tuning_data: List[GeminiFinetuningData]):
+def tune_model(model, tuning_data: List[GeminiFinetuningData]):
     """Tune the Gemini model with the provided data."""
     print("Starting model tuning process...")
     
