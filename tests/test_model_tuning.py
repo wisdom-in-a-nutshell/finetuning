@@ -1,7 +1,10 @@
+from typing import List
+
 import pytest
 from unittest.mock import Mock, patch
-from src.model_tuning import setup_model, tune_model, get_tuned_model_status, wait_for_tuning_completion
+
 from src.data_preparation import GeminiFinetuningData
+from src.model_tuning import setup_model, tune_model, get_tuned_model_status, wait_for_tuning_completion
 
 @patch('google.generativeai.list_models')
 @patch('google.generativeai.configure')

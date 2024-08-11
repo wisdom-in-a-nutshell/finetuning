@@ -9,7 +9,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
 from config.settings import API_KEY, MODEL_NAME
-from data_preparation import GeminiFinetuningData
+from src.data_preparation import GeminiFinetuningData
 
 def setup_model():
     """Set up the Gemini model for tuning."""
