@@ -1,53 +1,124 @@
 import pytest
 import json
-from src.data_preparation import load_data, format_data_for_tuning
+import tempfile
+from src.data_preparation import (
+    validate_openai_chat_format,
+    load_and_validate_data,
+    format_data_for_gemini,
+    prepare_data_for_gemini,
+    InvalidDataFormatError,
+    InvalidJSONError
+)
 
-def test_load_data(tmp_path):
-    # Create a temporary JSONL file
-    d = tmp_path / "sub"
-    d.mkdir()
-    p = d / "test.jsonl"
-    data = [
-        {"messages": [
+def test_validate_openai_chat_format():
+    valid_data = {
+        "messages": [
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "Hello"},
+            {"role": "user", "content": "Hello!"},
             {"role": "assistant", "content": "Hi there! How can I assist you today?"}
-        ]},
-        {"messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "What's the weather like?"},
-            {"role": "assistant", "content": "I'm sorry, but I don't have access to real-time weather information. Could you please check a weather website or app for the most up-to-date forecast?"}
-        ]}
+        ]
+    }
+    assert validate_openai_chat_format(valid_data) == True
+
+    invalid_data = {
+        "messages": [
+            {"role": "invalid_role", "content": "This is invalid."},
+        ]
+    }
+    assert validate_openai_chat_format(invalid_data) == False
+
+def test_load_and_validate_data():
+    valid_data = [
+        '{"messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Hello!"}, {"role": "assistant", "content": "Hi there!"}]}',
+        '{"messages": [{"role": "user", "content": "How are you?"}, {"role": "assistant", "content": "I\'m doing well, thank you!"}]}'
     ]
-    with open(p, 'w') as f:
-        for item in data:
-            f.write(json.dumps(item) + '\n')
+
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_file:
+        for line in valid_data:
+            temp_file.write(line + '\n')
     
-    loaded_data = load_data(str(p))
-    assert len(loaded_data) == 2
-    assert loaded_data[0] == data[0]
-    assert loaded_data[1] == data[1]
+    result = load_and_validate_data(temp_file.name)
+    assert len(result) == 2
+    assert all(isinstance(item, dict) for item in result)
 
-def test_format_data_for_tuning():
-    test_data = [
-        {"messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "Hello"},
-            {"role": "assistant", "content": "Hi there! How can I assist you today?"}
-        ]},
-        {"messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "What's the weather like?"},
-            {"role": "assistant", "content": "I'm sorry, but I don't have access to real-time weather information. Could you please check a weather website or app for the most up-to-date forecast?"}
-        ]}
+def test_load_and_validate_data_with_invalid_file():
+    invalid_data = [
+        '{"invalid": "data"}',
+        '{"also": "invalid"}'
     ]
-    formatted_data = format_data_for_tuning(test_data)
-    assert len(formatted_data) == 2
-    assert formatted_data[0] == {
-        "input_text": "You are a helpful assistant. Hello",
-        "output_text": "Hi there! How can I assist you today?"
-    }
-    assert formatted_data[1] == {
-        "input_text": "You are a helpful assistant. What's the weather like?",
-        "output_text": "I'm sorry, but I don't have access to real-time weather information. Could you please check a weather website or app for the most up-to-date forecast?"
-    }
+
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_file:
+        for line in invalid_data:
+            temp_file.write(line + '\n')
+    
+    with pytest.raises(InvalidDataFormatError):
+        load_and_validate_data(temp_file.name)
+
+def test_load_and_validate_data_with_invalid_json():
+    invalid_data = [
+        '{"messages": [{"role": "user", "content": "Hello"}]}',
+        '{"messages": [{"role": "assistant", "content": "Hi"}]',  # Missing closing brace
+    ]
+
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_file:
+        for line in invalid_data:
+            temp_file.write(line + '\n')
+    
+    with pytest.raises(InvalidJSONError):
+        load_and_validate_data(temp_file.name)
+
+def test_load_and_validate_data_with_empty_file():
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_file:
+        temp_file.write('')  # Create an empty file
+    
+    with pytest.raises(InvalidDataFormatError):
+        load_and_validate_data(temp_file.name)
+
+def test_load_and_validate_data_with_nonexistent_file():
+    with pytest.raises(FileNotFoundError):
+        load_and_validate_data("nonexistent_file.jsonl")
+
+def test_format_data_for_gemini():
+    input_data = [
+        {
+            "messages": [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": "Hello!"},
+                {"role": "assistant", "content": "Hi there! How can I assist you today?"}
+            ]
+        }
+    ]
+    result = format_data_for_gemini(input_data)
+    assert len(result) == 1
+    assert "input_text" in result[0]
+    assert "output_text" in result[0]
+    assert result[0]["input_text"] == "You are a helpful assistant. Hello!"
+    assert result[0]["output_text"] == "Hi there! How can I assist you today?"
+
+def test_prepare_data_for_gemini():
+    valid_data = [
+        '{"messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Hello!"}, {"role": "assistant", "content": "Hi there!"}]}',
+        '{"messages": [{"role": "user", "content": "How are you?"}, {"role": "assistant", "content": "I\'m doing well, thank you!"}]}'
+    ]
+
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_file:
+        for line in valid_data:
+            temp_file.write(line + '\n')
+    
+    result = prepare_data_for_gemini(temp_file.name)
+    assert len(result) == 2
+    assert all(isinstance(item, dict) for item in result)
+    assert all("input_text" in item and "output_text" in item for item in result)
+
+def test_prepare_data_for_gemini_with_invalid_file():
+    invalid_data = [
+        '{"invalid": "data"}',
+        '{"also": "invalid"}'
+    ]
+
+    with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_file:
+        for line in invalid_data:
+            temp_file.write(line + '\n')
+    
+    with pytest.raises(InvalidDataFormatError):
+        prepare_data_for_gemini(temp_file.name)

@@ -6,16 +6,15 @@ import argparse
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
-from src.data_preparation import load_data, format_data_for_tuning
+from src.data_preparation import prepare_data_for_gemini
 from src.model_tuning import setup_model, tune_model, save_tuned_model
-from src.evaluation import save_results
+from src.evaluation import evaluate_model, save_results
 
 def main(data_file, test_file, output_model, output_results):
     print("Starting Gemini model tuning process")
 
     # Load and preprocess data
-    data = load_data(data_file)
-    tuning_data = format_data_for_tuning(data)
+    tuning_data = prepare_data_for_gemini(data_file)
 
     # Set up and tune the model
     model = setup_model()
@@ -24,9 +23,9 @@ def main(data_file, test_file, output_model, output_results):
     # Save the tuned model
     save_tuned_model(tuned_model, output_model)
 
-    # Evaluate the tuned model (placeholder for now)
-    test_data = load_data(test_file)
-    evaluation_results = {"placeholder": "Implement actual evaluation"}
+    # Evaluate the tuned model
+    test_data = prepare_data_for_gemini(test_file)
+    evaluation_results = evaluate_model(tuned_model, test_data)
 
     # Save evaluation results
     save_results(evaluation_results, output_results)
@@ -35,8 +34,8 @@ def main(data_file, test_file, output_model, output_results):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Gemini model tuning and evaluation")
-    parser.add_argument("--data_file", required=True, help="Path to the training data CSV file")
-    parser.add_argument("--test_file", required=True, help="Path to the test data CSV file")
+    parser.add_argument("--data_file", required=True, help="Path to the training data JSONL file")
+    parser.add_argument("--test_file", required=True, help="Path to the test data JSONL file")
     parser.add_argument("--output_model", required=True, help="Path to save the tuned model")
     parser.add_argument("--output_results", required=True, help="Path to save the evaluation results")
     args = parser.parse_args()
