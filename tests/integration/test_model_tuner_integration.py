@@ -1,3 +1,4 @@
+import logging
 import os
 import pytest
 import random
@@ -58,7 +59,8 @@ def test_tune_model_integration(model_tuner):
         pytest.fail(f"Tuning failed: {str(e)}")
     finally:
         # Clean up: delete the tuned model
-        genai.delete_tuned_model(f'tunedModels/{name}')
+        # genai.delete_tuned_model(f'tunedModels/{name}')
+        logging.info(f"Tuning model done: {name}")
 
 @pytest.mark.integration
 def test_get_available_models_integration(model_tuner):
