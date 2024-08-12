@@ -27,7 +27,3 @@ class OpenAIChatFormat(dict):
                 return f"<assistant>{message['content']}</assistant>"
         return ""  # Return empty string if no assistant message found
 
-class GeminiFinetuningData:
-    def __init__(self, text_input: str, output: str):
-        self.text_input = text_input
-        self.output = output

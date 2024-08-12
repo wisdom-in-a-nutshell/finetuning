@@ -4,7 +4,9 @@ import json
 import os
 from src.data_preparation.data_preparator import DataPreparator
 from src.data_preparation.exceptions import InvalidDataFormatError, InvalidJSONError
-from src.data_preparation.chat_message_formatters import OpenAIChatFormat, GeminiFinetuningData
+from src.data_preparation.chat_message_formatters import OpenAIChatFormat
+from src.data_preparation.gemini_finetuning_data import GeminiFinetuningData
+
 
 class TestDataPreparator:
     @pytest.fixture

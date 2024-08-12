@@ -9,7 +9,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-from ..data_preparation.chat_message_formatters import GeminiFinetuningData
+from src.data_preparation.gemini_finetuning_data import GeminiFinetuningData
 
 
 class ModelTuner:
@@ -56,12 +56,15 @@ class ModelTuner:
         if name is None:
             name = f'generate-num-{random.randint(0,10000)}'
         
+        # Convert tuning data to Gemini API format
+        gemini_format_data = [GeminiFinetuningData.to_gemini_format(data) for data in tuning_data]
+        
         # Start the tuning process
         try:
             operation = genai.create_tuned_model(
                 display_name=name,
                 source_model="models/gemini-1.5-flash-001-tuning",
-                training_data=tuning_data,
+                training_data=gemini_format_data,
                 epoch_count=1,
                 batch_size=2,
                 learning_rate=0.001,

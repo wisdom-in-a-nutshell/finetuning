@@ -1,7 +1,8 @@
 import json
 import logging
 from typing import List
-from .chat_message_formatters import OpenAIChatFormat, GeminiFinetuningData
+from .chat_message_formatters import OpenAIChatFormat
+from .gemini_finetuning_data import GeminiFinetuningData
 from .exceptions import InvalidDataFormatError, InvalidJSONError
 
 class DataPreparator:
