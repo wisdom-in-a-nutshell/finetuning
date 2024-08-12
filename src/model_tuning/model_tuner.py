@@ -1,6 +1,6 @@
 import os
 import google.generativeai as genai
-from typing import List, Dict
+from typing import List, Dict, Optional
 import time
 import logging
 import random
@@ -49,7 +49,7 @@ class ModelTuner:
         self.logger.info("OAuth 2.0 credentials set up successfully.")
         genai.configure(credentials=self.creds)
 
-    def tune_model(self, tuning_data: List[GeminiFinetuningData], name: str = None):
+    def tune_model(self, tuning_data: List[GeminiFinetuningData], name: Optional[str] = None):
         """Tune the Gemini model with the provided data."""
         self.logger.info("Starting model tuning process...")
         
