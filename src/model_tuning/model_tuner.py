@@ -28,9 +28,6 @@ class ModelTuner(BaseModelHandler):
                 display_name=name,
                 source_model="models/gemini-1.5-flash-001-tuning",
                 training_data=gemini_format_data,
-                epoch_count=1,
-                batch_size=2,
-                learning_rate=0.001,
             )
             self.logger.info(f"Tuning job started.")
             return operation
