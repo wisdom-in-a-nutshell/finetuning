@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import Mock, patch
 from src.model_tuning.model_tuner import ModelTuner
-from src.data_preparation.models import GeminiFinetuningData
+from src.data_preparation.chat_message_formatters import GeminiFinetuningData
 
 class TestModelTuner:
     @pytest.fixture
