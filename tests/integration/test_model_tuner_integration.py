@@ -18,17 +18,20 @@ def model_tuner():
 @pytest.mark.integration
 def test_setup_model_integration(model_tuner):
     assert model_tuner.model is not None
-
+    
 @pytest.mark.integration
 def test_tune_model_integration(model_tuner):
-    # Prepare some sample data for tuning
+    # Import GeminiFinetuningData
+    from src.data_preparation.gemini_finetuning_data import GeminiFinetuningData
+
+    # Prepare some sample data for tuning using GeminiFinetuningData
     tuning_data = [
-        {"text_input": "1", "output": "2"},
-        {"text_input": "3", "output": "4"},
-        {"text_input": "-3", "output": "-2"},
-        {"text_input": "twenty two", "output": "twenty three"},
-        {"text_input": "two hundred", "output": "two hundred one"},
-        {"text_input": "ninety nine", "output": "one hundred"},
+        GeminiFinetuningData(text_input="1", output="2"),
+        GeminiFinetuningData(text_input="3", output="4"),
+        GeminiFinetuningData(text_input="-3", output="-2"),
+        GeminiFinetuningData(text_input="twenty two", output="twenty three"),
+        GeminiFinetuningData(text_input="two hundred", output="two hundred one"),
+        GeminiFinetuningData(text_input="ninety nine", output="one hundred"),
     ]
 
     # Generate a unique name for the tuned model
