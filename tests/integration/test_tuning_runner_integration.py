@@ -31,13 +31,44 @@ def test_tuning_runner_integration(setup_environment, tmp_path):
         assert tuned_model_name is not None
         assert model_name in tuned_model_name
 
-        # Try to get the tuned model (this will verify if it exists)
+        # Try to get the tuned model status (this will verify if it exists)
         model_tuner = ModelTuner()
-        tuned_model = model_tuner.get_tuned_model(tuned_model_name)
-        assert tuned_model is not None
+        status = model_tuner.get_tuned_model_status(tuned_model_name)
+        assert status is not None
 
     except Exception as e:
         pytest.fail(f"Tuning process failed: {str(e)}")
+
+    finally:
+        # Clean up: You might want to delete the tuned model here
+        # Be cautious with this in a real environment
+        # genai.delete_tuned_model(tuned_model_name)
+        pass
+
+@pytest.mark.integration
+def test_tuning_runner_with_predetermined_file(setup_environment):
+    # Use a predetermined file path
+    data_file = "/Users/adi/Downloads/editor_aug12_10.jsonl"
+
+    # Initialize TuningRunner
+    runner = TuningRunner()
+
+    # Run the tuning process
+    model_name = "video_editing_model_v0.1"
+    try:
+        tuned_model_name = runner.run(data_file, model_name)
+
+        # Verify that the tuned model was created
+        assert tuned_model_name is not None
+        assert model_name in tuned_model_name
+
+        # Try to get the tuned model status (this will verify if it exists)
+        model_tuner = ModelTuner()
+        status = model_tuner.get_tuned_model_status(tuned_model_name)
+        assert status is not None
+
+    except Exception as e:
+        pytest.fail(f"Tuning process failed with predetermined file: {str(e)}")
 
     finally:
         # Clean up: You might want to delete the tuned model here

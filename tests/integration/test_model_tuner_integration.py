@@ -4,11 +4,11 @@ import pytest
 import random
 from dotenv import load_dotenv
 import google.generativeai as genai
-from src.model_tuning.model_tuner import ModelTuner
+from src.model_tuning.model_tuner import ModelTuner, BaseModelHandler
 
 @pytest.fixture(scope="module")
 def model_tuner():
-    load_dotenv()  # This will load the variables from .env file
+    load_dotenv()
     client_secret_path = os.getenv('CLIENT_SECRET_PATH')
     if not client_secret_path:
         pytest.skip("CLIENT_SECRET_PATH not set in environment or .env file")
@@ -17,9 +17,9 @@ def model_tuner():
     return tuner
 
 @pytest.mark.integration
-def test_setup_model_integration(model_tuner):
-    assert model_tuner.model is not None
-    
+def test_setup_credentials_integration(model_tuner):
+    assert model_tuner.creds is not None
+
 @pytest.mark.integration
 def test_tune_model_integration(model_tuner):
     # Import GeminiFinetuningData
@@ -84,3 +84,17 @@ def test_get_available_models_integration(model_tuner):
     model_tuner.logger.info("Available models for fine-tuning:")
     for model in available_models:
         model_tuner.logger.info(f"- {model.name}")
+
+@pytest.mark.integration
+def test_get_tuned_model_status_integration(model_tuner):
+    # This test assumes you have a tuned model. Adjust as necessary.
+    model_name = "your_tuned_model_name"
+    status = model_tuner.get_tuned_model_status(model_name)
+    assert status is not None
+
+@pytest.mark.integration
+def test_get_tuned_model_integration(model_tuner):
+    # This test assumes you have a tuned model. Adjust as necessary.
+    model_name = "your_tuned_model_name"
+    tuned_model = model_tuner.get_tuned_model(model_name)
+    assert tuned_model is not None

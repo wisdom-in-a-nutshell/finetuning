@@ -34,12 +34,11 @@ class TuningRunner:
         self.logger.info("Starting model tuning")
         tuning_operation = model_tuner.tune_model(tuning_data, name=model_name)
 
+        # Wait for tuning completion
         self.logger.info("Waiting for tuning to complete...")
         result = model_tuner.wait_for_tuning_completion(tuning_operation)
 
-        self.logger.info(f"Tuning completed. Model name: {result.model}")
-        self.logger.info("Gemini model tuning process completed")
-        
+        # Return the model name
         return result.model
 
 def main():

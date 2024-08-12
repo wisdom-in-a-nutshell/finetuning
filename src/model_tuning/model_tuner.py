@@ -1,9 +1,9 @@
 import os
 import google.generativeai as genai
-from typing import List, Dict, Optional
-import time
+from typing import List, Optional
 import logging
 import random
+from google.ai import generativelanguage as glm
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -11,8 +11,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 
 from src.data_preparation.gemini_finetuning_data import GeminiFinetuningData
 
-
-class ModelTuner:
+class BaseModelHandler:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.creds = None
@@ -49,6 +48,50 @@ class ModelTuner:
         self.logger.info("OAuth 2.0 credentials set up successfully.")
         genai.configure(credentials=self.creds)
 
+    def get_available_models(self):
+        """Get all available models for fine-tuning."""
+        self.logger.info("Fetching available models for fine-tuning...")
+        try:
+            models = genai.list_models()
+            fine_tunable_models = [model for model in models]
+            self.logger.info(f"Found {len(fine_tunable_models)} fine-tunable models.")
+            return fine_tunable_models
+        except Exception as e:
+            self.logger.error(f"Error fetching available models: {str(e)}")
+            raise
+
+    def get_tuned_model_status(self, model_name: str):
+        """Get the status of a tuned model."""
+        self.logger.info(f"Checking status of tuned model: {model_name}")
+        try:
+            # Attempt to get the model
+            model = genai.get_model(model_name)
+            
+            # Check the model's state
+            if model.state == glm.TunedModel.State.ACTIVE:
+                status = "Ready for use"
+            elif model.state == glm.TunedModel.State.CREATING:
+                status = "Still being created"
+            elif model.state == glm.TunedModel.State.FAILED:
+                status = "Creation failed"
+            elif model.state == glm.TunedModel.State.STATE_UNSPECIFIED:
+                status = "State unspecified"
+            else:
+                status = f"Unknown state: {model.state.name}"            
+            self.logger.info(f"Model status: {status}")
+            return status
+        except Exception as e:
+            self.logger.error(f"Error checking model status: {str(e)}")
+            raise
+
+    def get_tuned_model(self, model_name: str):
+        """Get the tuned model."""
+        return genai.GenerativeModel(model_name=model_name)
+
+class ModelTuner(BaseModelHandler):
+    def __init__(self):
+        super().__init__()
+
     def tune_model(self, tuning_data: List[GeminiFinetuningData], name: Optional[str] = None):
         """Tune the Gemini model with the provided data."""
         self.logger.info("Starting model tuning process...")
@@ -84,19 +127,3 @@ class ModelTuner:
         result = operation.result()
         self.logger.info("Tuning completed successfully.")
         return result
-
-    def get_tuned_model(self, model_name: str):
-        """Get the tuned model."""
-        return genai.GenerativeModel(model_name=model_name)
-
-    def get_available_models(self):
-        """Get all available models for fine-tuning."""
-        self.logger.info("Fetching available models for fine-tuning...")
-        try:
-            models = genai.list_models()
-            fine_tunable_models = [model for model in models]
-            self.logger.info(f"Found {len(fine_tunable_models)} fine-tunable models.")
-            return fine_tunable_models
-        except Exception as e:
-            self.logger.error(f"Error fetching available models: {str(e)}")
-            raise
