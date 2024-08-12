@@ -23,6 +23,8 @@ This project demonstrates how to fine-tune (tune) a Gemini model using the Googl
    - Enable the Generative AI API for your project.
    - Create a service account and download the JSON key file.
    - Rename the key file to `service_account.json` and place it in the project root directory.
+   - Offical detailed instructions are [here]([https://console.cloud.google.com/](https://ai.google.dev/gemini-api/docs/oauth))
+
 
 4. Set the environment variable for authentication:
    ```
