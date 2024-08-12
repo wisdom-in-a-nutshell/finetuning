@@ -17,10 +17,20 @@ This project demonstrates how to fine-tune (tune) a Gemini model using the Googl
    pip install -r requirements.txt
    ```
 
-3. Set up your Google API key:
-   Create a `.env` file in the project root and add your API key:
+3. Set up your Google API credentials:
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/).
+   - Create a new project or select an existing one.
+   - Enable the Generative AI API for your project.
+   - Create a service account and download the JSON key file.
+   - Rename the key file to `service_account.json` and place it in the project root directory.
+
+4. Set the environment variable for authentication:
    ```
-   GOOGLE_API_KEY=your_api_key_here
+   export GOOGLE_APPLICATION_CREDENTIALS="path/to/service_account.json"
+   ```
+   On Windows, use:
+   ```
+   set GOOGLE_APPLICATION_CREDENTIALS=path\to\service_account.json
    ```
 
 ## Usage
