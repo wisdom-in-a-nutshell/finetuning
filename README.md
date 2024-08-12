@@ -38,7 +38,7 @@ This project demonstrates how to fine-tune (tune) a Gemini model using the Googl
 To run the tuning process:
 
 ```
-python scripts/run_tuning.py --data_file path/to/training_data.csv --test_file path/to/test_data.csv --output_model path/to/save/tuned_model --output_results path/to/save/evaluation_results.json
+python scripts/run_tuning.py --data_file path/to/training_data.jsonl --test_file path/to/test_data.jsonl --output_model path/to/save/tuned_model --output_results path/to/save/evaluation_results.json
 ```
 
 ## Project Structure
