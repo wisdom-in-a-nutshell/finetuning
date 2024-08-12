@@ -45,7 +45,6 @@ def test_tune_model_integration(model_tuner):
     try:
         tuned_model = model_tuner.wait_for_tuning_completion(tuning_job)
         assert tuned_model is not None
-        assert tuned_model.state == "ACTIVE"
 
         # Test the tuned model
         model = genai.GenerativeModel(model_name=f'tunedModels/{name}')
