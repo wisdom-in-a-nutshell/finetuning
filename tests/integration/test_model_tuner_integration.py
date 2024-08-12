@@ -4,6 +4,8 @@ import pytest
 import random
 from dotenv import load_dotenv
 import google.generativeai as genai
+
+from src.data_preparation.gemini_finetuning_data import GeminiFinetuningData
 from src.model_tuning.base_model_tuner import BaseModelHandler  # Update this import if necessary
 
 load_dotenv()
