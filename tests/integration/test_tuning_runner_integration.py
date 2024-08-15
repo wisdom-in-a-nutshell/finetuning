@@ -54,7 +54,7 @@ def test_tuning_runner_with_predetermined_file(setup_environment):
     runner = TuningRunner()
 
     # Run the tuning process
-    model_name = "video_editing_model_v0.2"
+    model_name = "video_editing_model_v0.3"
     try:
         tuned_model_name = runner.run(data_file, model_name)
 

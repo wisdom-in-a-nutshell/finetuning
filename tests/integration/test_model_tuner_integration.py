@@ -55,13 +55,27 @@ class TestModelTunerIntegration:
 
     def test_get_available_models_integration(self, model_tuner):
         available_models = model_tuner.get_available_models()
-        
+
         assert isinstance(available_models, list)
         assert len(available_models) > 0
         
+        tunable_models = []
         for model in available_models:
             assert hasattr(model, 'name')
             assert hasattr(model, 'supported_generation_methods')
+            if "gemini-1.5" in model.name.lower():
+                print(f"Model: {model.name}")
+                print(f"Input token limit: {model.input_token_limit}")
+                print(f"Output token limit: {model.output_token_limit}")
+                print("This is a Gemini 1.5 model")
+                if 'createTunedModel' in model.supported_generation_methods:
+                    print("This model supports fine-tuning")
+                print("---")
+            if 'createTunedModel' in model.supported_generation_methods:
+                tunable_models.append(model)
+
+        
+        assert len(tunable_models) > 0, "No models with createTunedTextModel method found"
 
     def test_get_tuned_model_status_integration(self, model_tuner):
         model_name = os.getenv('TEST_MODEL_NAME')

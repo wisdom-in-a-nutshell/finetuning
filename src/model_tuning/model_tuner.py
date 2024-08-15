@@ -26,7 +26,7 @@ class ModelTuner(BaseModelHandler):
         try:
             operation = genai.create_tuned_model(
                 display_name=name,
-                source_model="models/gemini-1.5-flash-001-tuning",
+                source_model="tunedModels/videoeditingmodelv02-bw5ietq3jqmb",
                 training_data=gemini_format_data,
             )
             self.logger.info(f"Tuning job started.")
