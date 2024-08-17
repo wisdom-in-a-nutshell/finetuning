@@ -18,10 +18,10 @@ class OpenAIChatFormat(dict):
         if "user" not in messages:
             raise ValueError("User message is required but missing.")
         
-        formatted_messages = [f"<original_transcript>\n{messages['user']}\n</original_transcript>"]
+        formatted_messages = [f"<input>\n{messages['user']}\n</input>"]
         
         if "system" in messages:
-            formatted_messages.insert(0, f"<system>{messages['system']}</system>\n\n")
+            formatted_messages.insert(0, f"<instructions>{messages['system']}</instructions>\n\n")
         
         return "".join(formatted_messages)
 
@@ -33,4 +33,4 @@ class OpenAIChatFormat(dict):
         if "assistant" not in messages:
             raise ValueError("Assistant message is required but missing.")
         
-        return f"<edited_transcript>\n{messages['assistant']}\n</edited_transcript>"
+        return messages['assistant']

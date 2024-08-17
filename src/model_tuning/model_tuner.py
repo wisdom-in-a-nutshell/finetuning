@@ -22,6 +22,12 @@ class ModelTuner(BaseModelHandler):
         # Convert tuning data to Gemini API format
         gemini_format_data = [GeminiFinetuningData.to_gemini_format(data) for data in tuning_data]
         
+        # Print the length of words in both input and output
+        for idx, formatted_data in enumerate(gemini_format_data):
+            input_length = len(formatted_data['text_input'].split())
+            output_length = len(formatted_data['output'].split())
+            print(f"Data {idx + 1}: Input length: {input_length} words, Output length: {output_length} words")
+
         # Start the tuning process
         try:
             operation = genai.create_tuned_model(

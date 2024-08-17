@@ -34,17 +34,7 @@ class TuningRunner:
         self.logger.info("Starting model tuning")
         tuning_operation = model_tuner.tune_model(tuning_data, name=model_name)
 
+        print("hey")
+
         # Return the model name
-        return tuning_operation.metadata.name
-
-def main():
-    parser = argparse.ArgumentParser(description="Run Gemini model tuning")
-    parser.add_argument("--data_file", required=True, help="Path to the training data JSONL file")
-    parser.add_argument("--model_name", required=True, help="Name for the tuned model")
-    args = parser.parse_args()
-
-    runner = TuningRunner()
-    runner.run(args.data_file, args.model_name)
-
-if __name__ == "__main__":
-    main()
+        # return tuning_operation.metadata.name

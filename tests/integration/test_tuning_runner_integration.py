@@ -48,13 +48,13 @@ def test_tuning_runner_integration(setup_environment, tmp_path):
 @pytest.mark.integration
 def test_tuning_runner_with_predetermined_file(setup_environment):
     # Use a predetermined file path
-    data_file = "/Users/adi/Downloads/editor_aug12_10.jsonl"
+    data_file = "/Users/adi/Documents/GitHub/data/tmp/finetuning_file/processed_combined.jsonl"
 
     # Initialize TuningRunner
     runner = TuningRunner()
 
     # Run the tuning process
-    model_name = "video_editing_model_v0.3"
+    model_name = "video_editing_model_v1_aug17_2024"
     try:
         tuned_model_name = runner.run(data_file, model_name)
 

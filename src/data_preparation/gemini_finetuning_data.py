@@ -10,6 +10,7 @@ class GeminiFinetuningData:
         """
         Convert GeminiFinetuningData to the format expected by the Gemini API.
         """
+
         return {
             "text_input": data.text_input,
             "output": data.output
