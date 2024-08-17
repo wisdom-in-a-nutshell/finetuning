@@ -49,7 +49,6 @@ class DataPreparator:
             self.logger.error(f"Unexpected error while loading file: {str(e)}")
             raise
 
-        print(f"Loaded data: {data}")  # Debug print
         if not data:
             error_msg = f"No valid data found in {self.file_path}"
             self.logger.error(error_msg)
