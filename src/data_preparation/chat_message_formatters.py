@@ -21,7 +21,7 @@ class OpenAIChatFormat(dict):
         formatted_messages = [f"<input>\n{messages['user']}\n</input>"]
         
         if "system" in messages:
-            formatted_messages.insert(0, f"<instructions>{messages['system']}</instructions>\n\n")
+            formatted_messages.insert(0, f"<instructions>\n{messages['system']}</instructions>\n\n")
         
         return "".join(formatted_messages)
 

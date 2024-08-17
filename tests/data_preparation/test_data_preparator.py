@@ -154,3 +154,25 @@ class TestDataPreparator:
             assert len(lines) == 3
             for line in lines:
                 assert json.loads(line)  # Ensure each line is valid JSON
+
+    def test_prepare_data_with_real_jsonl_file(self):
+        preparator = DataPreparator("/Users/adi/Documents/GitHub/data/tmp/finetuning_file/processed_combined.jsonl")
+        result = preparator.prepare_data()
+
+        # assert len(result) == 3
+        # assert all(isinstance(item, GeminiFinetuningData) for item in result)
+        # assert all(hasattr(item, 'text_input') and hasattr(item, 'output') for item in result)
+        #
+        # # Check the content of each item
+        # assert result[
+        #            0].text_input == "<system>You are a helpful AI assistant.</system> <user>What's the capital of France?</user>"
+        # assert result[0].output == "<assistant>The capital of France is Paris.</assistant>"
+        #
+        # assert result[1].text_input == "<user>Tell me a joke.</user>"
+        # assert result[
+        #            1].output == "<assistant>Why don't scientists trust atoms? Because they make up everything!</assistant>"
+        #
+        # assert result[2].text_input == "<system>You are a math tutor.</system> <user>What's 2 + 2?</user>"
+        # assert result[2].output == "<assistant>2 + 2 equals 4.</assistant>"
+
+# x

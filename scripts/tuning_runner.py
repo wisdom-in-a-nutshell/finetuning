@@ -34,7 +34,5 @@ class TuningRunner:
         self.logger.info("Starting model tuning")
         tuning_operation = model_tuner.tune_model(tuning_data, name=model_name)
 
-        print("hey")
-
         # Return the model name
-        # return tuning_operation.metadata.name
+        return tuning_operation.metadata.name

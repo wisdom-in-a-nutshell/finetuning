@@ -3,6 +3,13 @@ import pytest
 from scripts.tuning_runner import TuningRunner
 from src.model_tuning.model_tuner import ModelTuner
 from dotenv import load_dotenv
+import logging
+
+@pytest.fixture(autouse=True)
+def reduce_logging():
+    logging.getLogger().setLevel(logging.ERROR)
+    yield
+    logging.getLogger().setLevel(logging.INFO)
 
 @pytest.fixture(scope="module")
 def setup_environment():
@@ -54,7 +61,7 @@ def test_tuning_runner_with_predetermined_file(setup_environment):
     runner = TuningRunner()
 
     # Run the tuning process
-    model_name = "video_editing_model_v1_aug17_2024"
+    model_name = "episode-editor-v1"
     try:
         tuned_model_name = runner.run(data_file, model_name)
 

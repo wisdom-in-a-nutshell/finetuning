@@ -25,7 +25,7 @@ class DataPreparator:
         """Load training data from a JSONL file and validate its format."""
         data = []
         self.logger.info(f"Starting to load and validate data from {self.file_path}")
-        
+
         try:
             with open(self.file_path, 'r') as f:
                 for line_number, line in enumerate(f, 1):
@@ -67,15 +67,21 @@ class DataPreparator:
             )
             for item in data
         ]
-
+    
     def prepare_data(self) -> List[GeminiFinetuningData]:
         """Load, validate, and format data for Gemini finetuning."""
         try:
             raw_data = self.load_and_validate_data()
-            return self.format_data_for_gemini(raw_data)
+            formatted_data = self.format_data_for_gemini(raw_data)
+            
+            # Print word counts for each data point 
+            for idx, data in enumerate(formatted_data):
+                input_word_count = len(data.text_input.split())
+                output_word_count = len(data.output.split())
+                print(f"Data point {idx + 1}: Input words: {input_word_count}, Output words: {output_word_count}")
+            
+            return formatted_data
         except (InvalidDataFormatError, InvalidJSONError, FileNotFoundError) as e:
-            self.logger.error(f"Error preparing data for Gemini: {str(e)}")
             raise
         except Exception as e:
-            self.logger.error(f"Unexpected error preparing data for Gemini: {str(e)}")
             raise
